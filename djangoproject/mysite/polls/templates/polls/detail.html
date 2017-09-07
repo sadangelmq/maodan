@@ -1,0 +1,22 @@
+<!---->
+<!--显示的内容-->
+<h1>{{ question.question_text }}</h1>
+<!--提交from的时候都会检测是否合法的
+判断是否有报错-->
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<!--html的form标签-->
+<!--action内容，method提交的方式，默认是get方法-->
+<form action="{% url 'vote' question.id %}" method="post">
+    <!--为了安全的，每个form都会有一个id，在setting里设置了，重复提交了会报错-->
+    <!--form 标签必须要填上：{% csrf_token %}标签，否则提交不成功-->
+{% csrf_token %}
+    <!--choice_set，选项的问题是什么，属性是question，前面一个后面多个要加上set-->
+{% for choice in question.choice_set.all %}
+    <!--html的标签-->
+<input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+    <!--forloop显示的时候显示第几个-->
+<label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+{% endfor %}
+    <!--点击的时候提交-->
+<input type="submit" value="Vote" />
+</form>
